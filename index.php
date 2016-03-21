@@ -9,7 +9,7 @@ $app = new \Slim\Slim(array(
 ));
 
 // Set this to your domain
-$app->domain = 'yourdomain.com';
+$app->domain = '0bs.de';
 
 $app->container->singleton('api', function () use ($app, $dbConfig) {
   return new API($dbConfig, $app->domain);
@@ -28,22 +28,22 @@ function APIRequest() {
  */
 $app->get('/', function () use ($app) {
   $app->render('shortener.php', array( 'revision' => 4 ));
-});
-
-$app->get('/:id+', function ($id) use ($app) {
-  $result = $app->api->getLinkById($id);
-
-  if ($result != null) {
-    $app->render('redirect.php', array('urlShortened' => $result['urlShortened']));
-  }
-  else {
-    $app->notFound();
-  }
-})->conditions(array('id' => '\d+'));
+})->name("root");
 
 $app->get('/api', function () use ($app) {
   $app->render('docs.php');
 });
+
+$app->get('/:id', function ($id) use ($app) {
+  $result = $app->api->getLinkById($id);
+
+  if ($result != null) {
+    $app->response->redirect($result['urlShortened'], 301);
+  }
+  else {
+    $app->response->redirect($app->urlFor('root'), 303);
+  }
+})->conditions(array('id' => '\w+'));
 
 
 /**
@@ -61,7 +61,22 @@ $app->group('/api', 'APIRequest', function () use ($app) {
     else {
       $app->render(404, array('error' => true, 'msg' => 'Link has not been found'));
     }
-  })->conditions(array('id' => '\d+'));
+  })->conditions(array('id' => '\w+'));
+  
+  $app->get('/getQrCode/:id', function($id) use ($app) {
+
+    $result = $app->api->qrCode($id);
+
+    if ($result != null) {
+      $response = $app->response();
+      $response['Content-Type'] = 'image/png';
+      $response->status(200);
+      $response->body($result->get('png'));
+    }
+    else {
+      $app->render(404, array('error' => true, 'msg' => 'Link has not been found'));
+    }
+  })->conditions(array('id' => '\w+'));
 
   $app->put('/addLink', function() use ($app) {
     $putData = $app->request->put();
@@ -71,7 +86,7 @@ $app->group('/api', 'APIRequest', function () use ($app) {
       if ($app->api->validateUrl($url)) {
 
         if (strpos($url, $app->domain)) {
-          $app->render(200, array('msg' => 'Huehue, nice try! <img src="http://'.$app->domain.'/media/gfx/smtlikethis.jpg" alt="">',
+          $app->render(200, array('msg' => 'Huehue, nice try! <img src="/media/gfx/smtlikethis.jpg" alt="">',
             'zonk' => true));
           return;
         }
@@ -82,9 +97,7 @@ $app->group('/api', 'APIRequest', function () use ($app) {
           $app->render(200, $existingUrl);
         }
         else {
-          $lastInsertId = $app->api->addLink($url);
-
-          $result = $app->api->getLinkById($lastInsertId);
+          $result = $app->api->addLink($url);
 
           $app->render(201, $result);
         }

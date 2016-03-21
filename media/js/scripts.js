@@ -17,6 +17,12 @@ $(document).ready(function(event) {
 
       $form.on('submit', function (event) {
         event.preventDefault();
+
+        location_value = $context.find('#longUrl').val();
+        if ((location_value.search("http") == -1) && (location_value.search("https") == -1) && (location_value != "")) {
+          $context.find('#longUrl').val("http://" + location_value);
+        }
+
         request = App.methods.submitUrl($context.find('#longUrl').val());
 
         request
@@ -61,11 +67,16 @@ $(document).ready(function(event) {
           var $urlBox;
 
           $urlBox = $context.find('[data-url-container]');
-          $urlBox.html('<a href="' + response.fullURL + '">' + response.fullURL + '</a>');
+          $urlBox.html('<a href="' + response.fullUrl + '">' + response.fullUrl + '</a>'); 
           $context.find('[data-error-container]').removeClass('show');
           $context.find('[data-zonk-container]').remove();
           $urlBox.addClass('show');
+          setTimeout(function() {
+            $urlBox.append('<br /><img src="api/getQrCode/' + response.id + '" alt="qr-code" id="qr-code" style="display: none;">');
+            $('#qr-code').fadeIn("slow");
+          }, 400);
           $context.find('form input').attr("disabled", "disabled");
+          setTimeout(function(){ $context.find('form input').prop("disabled", false); }, 2000);
         }
       }
       else {

@@ -1,5 +1,16 @@
+html {
+  width: 100%;
+  height: 100%
+}
+
 body {
-  background: url(../gfx/background.png);
+  margin: 0;
+  padding: 0;
+  background: url('/media/gfx/background.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 .hidden {
   visibility: hidden;
@@ -7,9 +18,14 @@ body {
 .notyet {
   text-decoration: line-through;
 }
+#logo {
+  width: 100%;
+  text-align: center;
+  padding-top: 80px;
+}
 #container {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   margin-top: -50px;
   margin-left: -260px;
@@ -18,29 +34,11 @@ body {
 #container .wrapper {
   min-width: 480px;
   position: relative;
-  background: #7CC1F0;
+  background: #0d4a72;
   padding: 20px;
   min-height: 55px;
   z-index: 2;
   border-bottom: 4px solid #2980b9;
-}
-#container .wrapper .chrome-ext-promo {
-  position: absolute;
-  width: 100%;
-  height: 64px;
-  top: -100px;
-  left: 0;
-  background: #fff;
-  font-family: sertig, sans-serif;
-  text-decoration: none;
-  border-radius: 5px;
-  color: #2c3e50;
-  line-height: 64px;
-}
-#container .wrapper .chrome-ext-promo img {
-  display: block;
-  float: left;
-  margin-right: 20px;
 }
 #container .info-box {
   position: absolute;
@@ -140,21 +138,20 @@ body {
   text-decoration: none;
   color: #fff;
   font-size: 12px;
+  font-family: sertig, sans-serif;
 }
 #container .info.name {
   width: 35px;
-  font-family: sertig, sans-serif;
 }
-#container .twitter {
+#container .api {
   left: 36px;
   top: -20px;
   height: 19px;
+  color: #2c3e50;
   background-color: #fff;
-  background-image: url(../gfx/twitter.png);
-  background-repeat: no-repeat;
-  background-position: center;
   border: 1px solid #7CC1F0;
   border-bottom: 0 none;
+  width: 30px;
 }
 
 @media 
@@ -219,6 +216,9 @@ and (max-device-width : 480px) {
     margin: 0 auto;
     width: 100%;
   }
+  #logo img {
+    width: 100%;
+  }
 }
 
 @media only screen 
@@ -227,5 +227,8 @@ and (max-device-width : 480px) {
   #container .info-box.show {
     top: 144px;
     line-height: 65px;
+  }
+  #logo img {
+    width: 100%;
   }
 }
