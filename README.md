@@ -1,4 +1,4 @@
-Ur2.pl project
+0bs.de project (provided by ur2.pl project)
 --------------
 
 Easy as can.
